@@ -1,5 +1,6 @@
 const Task = require("../model/tasks.model");
-const paginationHelpers = require("../../../helper/pagination");
+const { paginationHelpers } = require("../../../helper/pagination");
+const searchHelpers = require("../../../helper/search");
 
 // [GET] /tasks
 const getAll = async (req, res) => {
@@ -11,7 +12,7 @@ const getAll = async (req, res) => {
 
   // Pagination
   const countRecord = await Task.countDocuments(find);
-  let ObjectPage = paginationHelpers.paginationHelpers(
+  let ObjectPage = paginationHelpers(
     req.query,
     {
       currentPage: 3,
@@ -19,7 +20,6 @@ const getAll = async (req, res) => {
     },
     countRecord
   );
-
   //End Pagination
 
   // Bộ lọc trạng thái
@@ -33,6 +33,13 @@ const getAll = async (req, res) => {
     sort[query.sortKey] = query.sortValue;
   }
   //End sort
+
+  // Search
+  const objectSearch = searchHelpers(req.query);
+  if (objectSearch.regex) {
+    find.title = objectSearch.regex;
+  }
+  //End Search
 
   const task = await Task.find(find)
     .sort(sort)
