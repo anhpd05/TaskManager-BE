@@ -1,42 +1,69 @@
-const Task = require("../model/tasks.model")
+const Task = require("../model/tasks.model");
+const paginationHelpers = require("../../../helper/pagination");
+
 // [GET] /tasks
-module.exports.getAll = async (req ,res) => {
-    const find = {
-        deleted : false ,
-    }
-    const sort = {}
-    const query = req.query
+const getAll = async (req, res) => {
+  const find = {
+    deleted: false,
+  };
+  const sort = {};
+  const query = req.query;
 
-// Bộ lọc trạng thái 
-    if(query.status){
-        find.status = req.query.status
-    }
-// End Bộ lọc trạng thái   
+  // Pagination
+  const countRecord = await Task.countDocuments(find);
+  let ObjectPage = paginationHelpers.paginationHelpers(
+    req.query,
+    {
+      currentPage: 3,
+      limitPage: 2,
+    },
+    countRecord
+  );
 
-// Sort
-    if(query.sortKey && query.sortValue){
-        sort[query.sortValue] = query.sortValue
-    }
-//End sort
-    console.log(query)
-    const task = await Task.find(find).sort(sort)
+  //End Pagination
 
-    res.json(task)
-}
+  // Bộ lọc trạng thái
+  if (query.status) {
+    find.status = req.query.status;
+  }
+  // End Bộ lọc trạng thái
 
+  // Sort
+  if (query.sortKey && query.sortValue) {
+    sort[query.sortKey] = query.sortValue;
+  }
+  //End sort
+
+  const task = await Task.find(find)
+    .sort(sort)
+    .skip(ObjectPage.skipPage)
+    .limit(ObjectPage.limitPage);
+
+  return res.status(200).json({
+    errorCode: 0,
+    data: task,
+  });
+};
 
 // [GET] /tasks/detail/:id
-module.exports.detail = async(req,res) => {
-    try {
-        const id = req.params.id;
-        const task = await Task.find({
-        deleted : false,
-            _id : id
-    })
-    // console.log(task)  
-        res.json(task)
-    } catch (error) {
-        res.send("Không tìm thấy!")
-    }
-   
-}
+const detail = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const task = await Task.find({
+      deleted: false,
+      _id: id,
+    });
+    // console.log(task)
+    res.json(task);
+    return res.status(200).json({
+      errorCode: 0,
+      data: task,
+    });
+  } catch (error) {
+    return res.send("Không tìm thấy!");
+  }
+};
+module.exports = {
+  detail,
+  getAll,
+};

@@ -1,10 +1,11 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const controller = require("../controller/task.controller");
-router.get("/" , controller.getAll)
+// const controller = require("../controller/task.controller");
+const { detail, getAll } = require("../controller/task.controller");
 
-router.get("/detail/:id", controller.detail);
+router.get("/", getAll);
 
+router.get("/detail/:id", detail);
 
-module.exports = router
+module.exports = router;
