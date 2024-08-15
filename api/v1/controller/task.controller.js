@@ -4,14 +4,22 @@ module.exports.getAll = async (req ,res) => {
     const find = {
         deleted : false ,
     }
+    const sort = {}
     const query = req.query
 
 // Bộ lọc trạng thái 
     if(query.status){
         find.status = req.query.status
     }
-    // console.log(query)
-    const task = await Task.find(find)
+// End Bộ lọc trạng thái   
+
+// Sort
+    if(query.sortKey && query.sortValue){
+        sort[query.sortValue] = query.sortValue
+    }
+//End sort
+    console.log(query)
+    const task = await Task.find(find).sort(sort)
 
     res.json(task)
 }
