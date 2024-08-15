@@ -1,7 +1,7 @@
 require('dotenv').config(); 
 
 const express = require('express');
-const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const database = require("./config/database");
 
 const app = express();
@@ -13,15 +13,15 @@ database.connect();
 //Routes Ver 1
 routeAPIver1(app)
 
-const Task = require("./models/tasks.model")
-app.get("/tasks" , async(req,res) => {
-  // res.send("List tasks")
-  const task = await Task.find({
-    deleted : false
-  })
-  console.log(task)  
-  res.json(task)
-})
+// const Task = require("./models/tasks.model")
+// app.get("/tasks" , async(req,res) => {
+//   // res.send("List tasks")
+//   const task = await Task.find({
+//     deleted : false
+//   })
+//   console.log(task)  
+//   res.json(task)
+// })
 
 app.listen(port, () => {
   console.log(`App listening on port ${port}`);
