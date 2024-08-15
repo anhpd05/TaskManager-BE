@@ -67,21 +67,62 @@ const detail = async (req, res) => {
       data: task,
     });
   } catch (error) {
-    return res.send("Không tìm thấy!");
+    return res.status(400).json({
+      error: {
+        code: 400,
+        message: "Không tìm thấy!",
+      },
+    });
   }
 };
 
 // [POST] /tasks
 const CreatePost = async (req, res) => {
   //   console.log(req.body);
-
-  const task = await Task.create(req.body);
-  res.status(200).json({
-    data: task,
-  });
+  try {
+    const task = await Task.create(req.body);
+    return res.status(200).json({
+      data: task,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: {
+        code: 400,
+        message: "Tạo task thất bại.",
+      },
+    });
+  }
 };
+
+// [PATCH] /tasks/change-status/:id
+
+const ChangeStatusPatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const status = req.body.status;
+    console.log(id);
+    const task = await Task.updateOne(
+      { _id: id },
+      {
+        status: status,
+      }
+    );
+    return res.status(200).json({
+      data: task,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: {
+        code: 400,
+        message: "Cập nhật thất bại.",
+      },
+    });
+  }
+};
+
 module.exports = {
   detail,
   getAll,
   CreatePost,
+  ChangeStatusPatch,
 };
