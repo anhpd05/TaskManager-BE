@@ -1,12 +1,15 @@
 require("dotenv").config();
 
 const express = require("express");
-// const bodyParser = require('body-parser');
 const database = require("./config/database");
-
+const bodyParser = require("body-parser");
 const app = express();
 const port = process.env.PORT;
 const routeAPIver1 = require("./api/v1/routes/index");
+
+// parse application/json
+app.use(bodyParser.json());
+
 // Kết nối cơ sở dữ liệu
 database.connect();
 
