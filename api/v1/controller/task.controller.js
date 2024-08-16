@@ -154,10 +154,60 @@ const ChangeMultiPatch = async (req, res) => {
   }
 };
 
+// [PATCH] /tasks/:id
+const editPatch = async (req, res) => {
+  try {
+    const id = req.params.id;
+    // console.log(id);
+    const data = await Task.updateOne({ _id: id }, req.body);
+
+    return res.status(200).json({
+      data: data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: {
+        code: 400,
+        message: "Cập nhật thất bại.",
+      },
+    });
+  }
+};
+
+// [DELETE] /tasks/:id
+const deleteTaskDelete = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const data = await Task.updateOne(
+      { _id: id },
+      {
+        deleted: true,
+        deletedAt: new Date(),
+      }
+    );
+
+    // const data = await Task.deleteOne({ _id: id });
+    // Xóa vĩnh viễn
+
+    return res.status(200).json({
+      data: data,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      error: {
+        code: 400,
+        message: "Cập nhật thất bại.",
+      },
+    });
+  }
+};
+
 module.exports = {
   detail,
   getAll,
   CreatePost,
   ChangeStatusPatch,
   ChangeMultiPatch,
+  editPatch,
+  deleteTaskDelete,
 };
