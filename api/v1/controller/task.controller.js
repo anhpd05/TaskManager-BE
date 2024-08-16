@@ -122,7 +122,7 @@ const ChangeStatusPatch = async (req, res) => {
 // [PATCH] /tasks/change-multi
 const ChangeMultiPatch = async (req, res) => {
   const { ids, key, value } = req.body;
-  console.log({ ids, key, value });
+  // console.log({ ids, key, value });
   try {
     switch (key) {
       case "status":
