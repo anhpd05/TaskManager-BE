@@ -122,7 +122,7 @@ const ChangeStatusPatch = async (req, res) => {
 // [PATCH] /tasks/change-multi
 const ChangeMultiPatch = async (req, res) => {
   const { ids, key, value } = req.body;
-  // console.log({ ids, key, value });
+  console.log({ ids, key, value });
   try {
     switch (key) {
       case "status":
@@ -132,6 +132,20 @@ const ChangeMultiPatch = async (req, res) => {
         );
         return res.status(200).json({
           data: result,
+        });
+        break;
+      case "delete":
+        const resultDelete = await Task.updateMany(
+          { _id: { $in: ids } },
+          {
+            $set: {
+              deleted: true,
+              deletedAt: new Date(),
+            },
+          }
+        );
+        return res.status(200).json({
+          data: resultDelete,
         });
         break;
 
