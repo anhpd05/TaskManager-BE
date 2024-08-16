@@ -7,6 +7,7 @@ const {
   getAll,
   CreatePost,
   ChangeStatusPatch,
+  ChangeMultiPatch,
 } = require("../controller/task.controller");
 
 router.get("/", getAll);
@@ -17,4 +18,5 @@ router.post("/", CreatePost);
 
 router.patch("/change-status/:id", ChangeStatusPatch);
 
+router.patch("/change-multi", ChangeMultiPatch);
 module.exports = router;

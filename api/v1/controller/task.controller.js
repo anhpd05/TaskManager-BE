@@ -95,12 +95,11 @@ const CreatePost = async (req, res) => {
 };
 
 // [PATCH] /tasks/change-status/:id
-
 const ChangeStatusPatch = async (req, res) => {
   try {
     const id = req.params.id;
     const status = req.body.status;
-    console.log(id);
+    // console.log(id);
     const task = await Task.updateOne(
       { _id: id },
       {
@@ -120,9 +119,45 @@ const ChangeStatusPatch = async (req, res) => {
   }
 };
 
+// [PATCH] /tasks/change-multi
+const ChangeMultiPatch = async (req, res) => {
+  const { ids, key, value } = req.body;
+  // console.log({ ids, key, value });
+  try {
+    switch (key) {
+      case "status":
+        const result = await Task.updateMany(
+          { _id: { $in: ids } },
+          { $set: { status: value } }
+        );
+        return res.status(200).json({
+          data: result,
+        });
+        break;
+
+      default:
+        return res.status(400).json({
+          error: {
+            code: 400,
+            message: "Cập nhật thất bại.",
+          },
+        });
+        break;
+    }
+  } catch (error) {
+    return res.status(400).json({
+      error: {
+        code: 400,
+        message: "Cập nhật thất bại.",
+      },
+    });
+  }
+};
+
 module.exports = {
   detail,
   getAll,
   CreatePost,
   ChangeStatusPatch,
+  ChangeMultiPatch,
 };
